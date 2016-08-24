@@ -8,16 +8,24 @@
     <title>Token Replacer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.12/angular.min.js"></script>
     <script src="./index.js"></script>
+    <script>
+      // livereload yay
+      document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+      ':35729/livereload.js?snipver=1"></' + 'script>')
+    </script>
 </head>
 
 <body ng-app="tokenResolver" ng-controller="ParserCtrl">
-  <div class="row">
-    Token: <input ng-model="token" type="text"/>
-    Replacement: <input ng-model="replacement" type="text"/>
+  <div class="row" ng-repeat="(token, replacement) in parser.replacements track by $index">
+    <!-- use on-change instead of ng-change to avoid token name collisions -->
+    Token: <input type="text" ng-model="token" on-change="parser.replaces(token, replacement, '{{token}}').parse()"/>
+    Replacement: <input type="text" ng-model="replacement" ng-change="parser.replaces(token, replacement).parse()"/>
   </div>
+  <button ng-click="parser.replaces('', '')">[+]</button>
   <div>
-    <div>Input <textarea ng-model="input"></textarea></div>
-    <div>Output <textarea ng-model="output"></textarea></div>
+    <div>Input <textarea ng-model="parser.input" ng-change="parser.parse()" cols="80" rows="10"></textarea></div>
+    <div>Output <textarea ng-model="parser.output" disabled="true" cols="80" rows="10"></textarea></div>
+
   </div>
 </body>
 
