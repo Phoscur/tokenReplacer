@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="Simple template parser simulater">
-    <meta name="author" content="Justus Maier">
+    <meta charset="utf-8"/>
+    <meta name="description" content="Simple template parser simulater"/>
+    <meta name="author" content="Justus Maier"/>
     <title>Token Replacer</title>
+    <link rel="stylesheet" href="http://code.ionicframework.com/1.3.1/css/ionic.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.12/angular.min.js"></script>
     <script src="./index.js"></script>
     <script>
@@ -15,16 +16,46 @@
     </script>
 </head>
 
-<body ng-app="tokenResolver" ng-controller="ParserCtrl">
-  <div class="row" ng-repeat="replacement in parser.replacements track by $index">
-    Token: <input type="text" ng-model="replacement.token" ng-change="parser.parse()"/>
-    Replacement: <input type="text" ng-model="replacement.text" ng-change="parser.parse()"/>
-    <button ng-click="parser.remove(replacement.token)">[-]</button>
+<body ng-app="tokenReplacer" ng-controller="ParserCtrl">
+  <h1>Token Replacer</h1>
+  <div class="row">
+    <div class="col-40">Token</div>
+    <div class="col-40">Replacement</div>
+    <div class="col-20">-</div>
   </div>
-  <button ng-click="parser.replaces('', '')">[+]</button>
-  <div>
-    <div>Input <textarea ng-model="parser.input" ng-change="parser.parse()" cols="80" rows="10"></textarea></div>
-    <div>Output <textarea ng-model="parser.output" disabled="true" cols="80" rows="10"></textarea></div>
+  <div class="row" ng-repeat="replacement in parser.replacements track by $index">
+    <div class="col-40">
+      <label class="item item-input-inset">
+        <input type="text" ng-model="replacement.token" ng-change="parser.parse()" placeholder="token"/>
+      </label>
+    </div>
+    <div class="col-40">
+      <label class="item item-input-inset">
+        <input type="text" ng-model="replacement.text" ng-change="parser.parse()" placeholder="replacement"/>
+      </label>
+    </div>
+    <div class="col-10">
+      <button class="button button-assertive" ng-click="parser.remove(replacement.token)">(-) Delete</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-offset-80 col-20">
+      <button class="button button-balanced" ng-click="parser.replaces('', '')">(+) Add new Token</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h2>Input</h2>
+      <label class="item item-input-inset">
+        <textarea ng-model="parser.input" ng-change="parser.parse()" cols="80" rows="10"></textarea>
+      </label>
+    </div>
+    <div class="col">
+      <h2>Output</h2>
+      <textarea ng-model="parser.output" disabled="true" cols="80" rows="10"></textarea>
+
+    </div>
 
   </div>
 </body>

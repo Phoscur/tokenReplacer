@@ -1,13 +1,14 @@
 'use strict';
-/* globals angular */
+/* global angular */
 
 angular
-  .module('tokenResolver', [])
+  .module('tokenReplacer', [])
   .controller('ParserCtrl', function($scope, parseText) {
     var parser = $scope.parser = {
       input: '',
       replacements: [],
       output: '',
+
       remove: function(token) {
         this.replacements.some(function(touple, i) {
           if (touple.token === token) {
@@ -16,6 +17,7 @@ angular
           }
         }, this);
       },
+
       replaces: function(token, replacement) {
         this.replacements.push({
           token: token,
@@ -23,13 +25,19 @@ angular
         });
         return this;
       },
+      // missing update method:
+      //  changing replacements is currently done directly on the scope
+
+      /**
+        Parse the input with the replacements into the output
+       */
       parse: function() {
         var replacements = this.replacements // as hashmap
           .reduce(function(hashmap, replacement) {
             hashmap[replacement.token] = replacement.text;
             return hashmap;
           }, {});
-        this.output = parseText(this.input, this.replacements) || '---';
+        this.output = parseText(this.input, replacements) || '---';
         return this;
       }
     };
@@ -43,7 +51,7 @@ angular
   })
   .factory('parseText', function() {
     return function(text, replacements) {
-      return text
+      return (text || '')
         .replace(
           /([^\\])\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,
           function(match, previousChar, token, offset, string) {
