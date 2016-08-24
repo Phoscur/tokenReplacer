@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Simple template parser simulater">
+    <meta name="author" content="Justus Maier">
+    <title>Token Replacer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.12/angular.min.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+<body ng-app="tokenResolver" ng-controller="ParserCtrl">
+  <div class="row">
+    Token: <input ng-model="token" type="text"/>
+    Replacement: <input ng-model="replacement" type="text"/>
+  </div>
+  <div>
+    <div>Input <textarea ng-model="input"></textarea></div>
+    <div>Output <textarea ng-model="output"></textarea></div>
+  </div>
+</body>
+
+</html>
