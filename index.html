@@ -16,10 +16,10 @@
 </head>
 
 <body ng-app="tokenResolver" ng-controller="ParserCtrl">
-  <div class="row" ng-repeat="(token, replacement) in parser.replacements track by $index">
-    <!-- use on-change instead of ng-change to avoid token name collisions -->
-    Token: <input type="text" ng-model="token" on-change="parser.replaces(token, replacement, '{{token}}').parse()"/>
-    Replacement: <input type="text" ng-model="replacement" ng-change="parser.replaces(token, replacement).parse()"/>
+  <div class="row" ng-repeat="replacement in parser.replacements track by $index">
+    Token: <input type="text" ng-model="replacement.token" ng-change="parser.parse()"/>
+    Replacement: <input type="text" ng-model="replacement.text" ng-change="parser.parse()"/>
+    <button ng-click="parser.remove(replacement.token)">[-]</button>
   </div>
   <button ng-click="parser.replaces('', '')">[+]</button>
   <div>

@@ -6,16 +6,29 @@ angular
   .controller('ParserCtrl', function($scope, parseText) {
     var parser = $scope.parser = {
       input: '',
-      replacements: {},
+      replacements: [],
       output: '',
-      replaces: function(token, replacement, oldToken) {
-        if (oldToken || oldToken === '') {
-          delete this.replacements[oldToken];
-        }
-        this.replacements[token] = replacement;
+      remove: function(token) {
+        this.replacements.some(function(touple, i) {
+          if (touple.token === token) {
+            this.replacements.splice(i, 1);
+            return true;
+          }
+        }, this);
+      },
+      replaces: function(token, replacement) {
+        this.replacements.push({
+          token: token,
+          text: replacement
+        });
         return this;
       },
       parse: function() {
+        var replacements = this.replacements // as hashmap
+          .reduce(function(hashmap, replacement) {
+            hashmap[replacement.token] = replacement.text;
+            return hashmap;
+          }, {});
         this.output = parseText(this.input, this.replacements) || '---';
         return this;
       }
