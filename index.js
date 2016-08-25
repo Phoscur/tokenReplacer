@@ -8,7 +8,9 @@ angular
       input: '',
       replacements: [],
       output: '',
-
+      /**
+        Remove the replacement for a given token
+       */
       remove: function(token) {
         this.replacements.some(function(touple, i) {
           if (touple.token === token) {
@@ -16,8 +18,11 @@ angular
             return true;
           }
         }, this);
+        return this;
       },
-
+      /**
+        Add a new replacement for a given token
+       */
       replaces: function(token, replacement) {
         this.replacements.push({
           token: token,
@@ -27,7 +32,6 @@ angular
       },
       // missing update method:
       //  changing replacements is currently done directly on the scope
-
       /**
         Parse the input with the replacements into the output
        */
@@ -45,23 +49,28 @@ angular
     // init
     parser.input = 'This is a {test} text containing \\{test} tokens, \n linebreaks \n \n \\backslashes\\\\\\\\ and {blubb} maybe {recursive} tokens!';
     parser.replaces('test', 'tasty');
-    parser.replaces('blubb', 'more replaced tokens');
+    parser.replaces('blubb', 'more replaced tokens as well as');
     parser.replaces('recursive', '{test}');
     parser.parse();
   })
   .factory('parseText', function() {
-    return function(text, replacements) {
+    return function replace(text, replacements) {
       return (text || '')
         .replace(
-          /([^\\])\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,
+          /([^\\])?\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,
           function(match, previousChar, token, offset, string) {
             // previous char is matched not to be a backslash
-            var replaced = previousChar;
-            if (!replacements[token]) {
+            var replaced = previousChar || '';
+            var replacement = replacements[token];
+            if (!replacement) {
               // no replacement found, reconstruct previous text
               replaced += '{' + token + '}';
             } else {
-              replaced += replacements[token];
+              if (/\{[a-zA-Z_][a-zA-Z0-9_]*\}/.test(replacement)) {
+                // recurse if the replacement contains placeholders
+                replacement = replace(replacement, replacements);
+              }
+              replaced += replacement;
             }
             return replaced;
           }
