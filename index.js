@@ -56,24 +56,19 @@ angular
   .factory('parseText', function() {
     return function replace(text, replacements) {
       return (text || '')
-        .replace(
-          /([^\\])?\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,
-          function(match, previousChar, token, offset, string) {
-            // previous char is matched not to be a backslash
-            var replaced = previousChar || '';
-            var replacement = replacements[token];
-            if (!replacement) {
-              // no replacement found, reconstruct previous text
-              replaced += '{' + token + '}';
-            } else {
-              if (/\{[a-zA-Z_][a-zA-Z0-9_]*\}/.test(replacement)) {
-                // recurse if the replacement contains placeholders
-                replacement = replace(replacement, replacements);
-              }
-              replaced += replacement;
-            }
-            return replaced;
+      .replace(
+        /([^\\])\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g,
+        function(match, previousChar, token, offset, string) {
+          // previous char is matched not to be a backslash
+          var replaced = previousChar;
+          if (!replacements[token]) {
+            // no replacement found, reconstruct previous text
+            replaced += '{' + token + '}';
+          } else {
+            replaced += replacements[token];
           }
-        );
+          return replaced;
+        }
+      );
     };
   });
